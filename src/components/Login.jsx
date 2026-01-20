@@ -12,6 +12,7 @@ export default function Login(event) {
     function handleSubmit(event) {
         event.preventDefault();
         console.log(email.current.value, password.current.value);
+        event.target.reset();
     }
 
     return (
