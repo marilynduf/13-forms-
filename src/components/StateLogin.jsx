@@ -1,10 +1,15 @@
 import { useState } from "react";
 
 export default function Login() {
-    const [enteredValues, setEnteredValues] = useState({
+    const initialValues = {
         email: "",
         password: "",
-    });
+    };
+    const [enteredValues, setEnteredValues] = useState(initialValues);
+
+    const handleReset = function () {
+        setEnteredValues(initialValues);
+    };
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -47,7 +52,7 @@ export default function Login() {
             </div>
 
             <p className="form-actions">
-                <button type="reset" className="button button-flat">
+                <button onClick={handleReset} className="button button-flat">
                     Reset
                 </button>
                 <button className="button">Login</button>
