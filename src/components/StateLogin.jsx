@@ -6,9 +6,21 @@ export default function Login() {
         password: "",
     };
     const [enteredValues, setEnteredValues] = useState(initialValues);
+    const emailIsIvalid =
+        enteredValues.email !== "" && !enteredValues.email.includes("@");
+
+    const [emailInputLostFocus, setEmailInputLostFocus] = useState(false);
 
     const handleReset = function () {
         setEnteredValues(initialValues);
+        setEmailInputLostFocus(false);
+    };
+
+    const handleOnBlur = function () {
+        setEmailInputLostFocus(true);
+    };
+    const handleOnFocus = function () {
+        setEmailInputLostFocus(false);
     };
 
     function handleSubmit(event) {
@@ -36,7 +48,13 @@ export default function Login() {
                         name="email"
                         value={enteredValues.email}
                         onChange={(event) => handleChange(event, "email")}
+                        onBlur={handleOnBlur}
+                        onFocus={handleOnFocus}
                     />
+                     
+                    {emailIsIvalid && emailInputLostFocus && (
+                        <div className="control-error">Email is invalid</div>
+                    )}
                 </div>
 
                 <div className="control no-margin">
