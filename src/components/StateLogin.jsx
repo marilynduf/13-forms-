@@ -16,7 +16,8 @@ export default function Login() {
 
     const emailIsIvalid =
         enteredValues.email.content !== "" &&
-        !enteredValues.email.content.includes("@");
+        !enteredValues.email.content.includes("@") &&
+        !enteredValues.email.isFocus;
 
     const handleReset = function () {
         setEnteredValues(initialValues);
@@ -73,7 +74,7 @@ export default function Login() {
                         value={enteredValues.email.content}
                     />
                      
-                    {emailIsIvalid && !enteredValues.email.isFocus && (
+                    {emailIsIvalid && (
                         <div className="control-error">Email is invalid</div>
                     )}
                 </div>
