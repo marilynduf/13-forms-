@@ -1,4 +1,9 @@
+import { useState } from "react";
+
 export default function Signup() {
+    const [passwordsIsNotMatching, setPasswordsIsNotMatching] = useState(false);
+    const [formIsValid, setFormIsValid] = useState(false);
+
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -6,7 +11,16 @@ export default function Signup() {
         const acquisitionChannel = fd.getAll("acquisition");
         const data = Object.fromEntries(fd.entries());
         data.acquisition = acquisitionChannel;
-        console.log(data);
+
+        if (data.password !== data["confirm-password"]) {
+            setPasswordsIsNotMatching(true);
+            console.log("not the same ");
+            return;
+        }
+
+        setPasswordsIsNotMatching(false);
+
+        console.log("password match");
     }
 
     return (
@@ -15,12 +29,11 @@ export default function Signup() {
             <p>
                 We just need a little bit of data from you to get you started 🚀
             </p>
-
             <div className="control">
                 <label htmlFor="email">Email</label>
                 <input id="email" type="email" name="email" required />
             </div>
-
+            {/* PASSWORD */}
             <div className="control-row">
                 <div className="control">
                     <label htmlFor="password">Password</label>
@@ -29,10 +42,10 @@ export default function Signup() {
                         type="password"
                         name="password"
                         required
-                        minLength={8}
+                        minLength={4}
                     />
                 </div>
-
+                {/* CONFIRM PASSWORD */}
                 <div className="control">
                     <label htmlFor="confirm-password">Confirm Password</label>
                     <input
@@ -41,11 +54,13 @@ export default function Signup() {
                         name="confirm-password"
                         required
                     />
+
+                    <div className="control-error">
+                        {passwordsIsNotMatching && <p>Password not matching</p>}
+                    </div>
                 </div>
             </div>
-
             <hr />
-
             <div className="control-row">
                 <div className="control">
                     <label htmlFor="first-name">First Name</label>
@@ -67,7 +82,6 @@ export default function Signup() {
                     />
                 </div>
             </div>
-
             <div className="control">
                 <label htmlFor="phone">What best describes your role?</label>
                 <select id="role" name="role" required>
@@ -78,7 +92,6 @@ export default function Signup() {
                     <option value="other">Other</option>
                 </select>
             </div>
-
             <fieldset>
                 <legend>How did you find us?</legend>
                 <div className="control">
@@ -111,7 +124,6 @@ export default function Signup() {
                     <label htmlFor="other">Other</label>
                 </div>
             </fieldset>
-
             <div className="control">
                 <label htmlFor="terms-and-conditions">
                     <input
@@ -123,7 +135,6 @@ export default function Signup() {
                     I agree to the terms and conditions
                 </label>
             </div>
-
             <p className="form-actions">
                 <button type="reset" className="button button-flat">
                     Reset
