@@ -3,11 +3,11 @@ import { useState } from "react";
 const initialValues = {
     email: {
         content: "",
-        isFocus: false,
+        didEdit: false,
     },
     password: {
         content: "",
-        isFocus: false,
+        didEdit: false,
     },
 };
 
@@ -15,9 +15,8 @@ export default function Login() {
     const [enteredValues, setEnteredValues] = useState(initialValues);
 
     const emailIsIvalid =
-        enteredValues.email.content !== "" &&
         !enteredValues.email.content.includes("@") &&
-        !enteredValues.email.isFocus;
+        enteredValues.email.didEdit;
 
     const handleReset = function () {
         setEnteredValues(initialValues);
@@ -28,7 +27,7 @@ export default function Login() {
             ...prevState,
             [identifier]: {
                 ...prevState[identifier],
-                isFocus: false,
+                didEdit: true,
             },
         }));
     };
@@ -37,21 +36,11 @@ export default function Login() {
         setEnteredValues((prevState) => ({
             ...prevState,
             [property]: {
-                ...prevState[property],
+                didEdit: false,
                 content: event.target.value,
             },
         }));
     }
-
-    const handleOnFocus = function (property) {
-        setEnteredValues((prevState) => ({
-            ...prevState,
-            [property]: {
-                ...prevState[property],
-                isFocus: true,
-            },
-        }));
-    };
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -70,7 +59,6 @@ export default function Login() {
                         name="email"
                         onChange={(event) => handleChange(event, "email")}
                         onBlur={() => handleOnBlur("email")}
-                        onFocus={() => handleOnFocus("email")}
                         value={enteredValues.email.content}
                     />
                      
