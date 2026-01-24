@@ -1,38 +1,59 @@
 import { useState } from "react";
 
-export default function Login() {
-    const initialValues = {
-        email: "",
-        password: "",
-    };
-    const [enteredValues, setEnteredValues] = useState(initialValues);
-    const emailIsIvalid =
-        enteredValues.email !== "" && !enteredValues.email.includes("@");
+const initialValues = {
+    email: {
+        content: "",
+        isFocus: false,
+    },
+    password: {
+        content: "",
+        isFocus: false,
+    },
+};
 
-    const [emailInputLostFocus, setEmailInputLostFocus] = useState(false);
+export default function Login() {
+    const [enteredValues, setEnteredValues] = useState(initialValues);
+
+    const emailIsIvalid =
+        enteredValues.email.content !== "" &&
+        !enteredValues.email.content.includes("@");
 
     const handleReset = function () {
         setEnteredValues(initialValues);
-        setEmailInputLostFocus(false);
     };
 
-    const handleOnBlur = function () {
-        setEmailInputLostFocus(true);
+    const handleOnBlur = function (identifier) {
+        setEnteredValues((prevState) => ({
+            ...prevState,
+            [identifier]: {
+                ...prevState[identifier],
+                isFocus: false,
+            },
+        }));
     };
-    const handleOnFocus = function () {
-        setEmailInputLostFocus(false);
+
+    function handleChange(event, property) {
+        setEnteredValues((prevState) => ({
+            ...prevState,
+            [property]: {
+                ...prevState[property],
+                content: event.target.value,
+            },
+        }));
+    }
+
+    const handleOnFocus = function (property) {
+        setEnteredValues((prevState) => ({
+            ...prevState,
+            [property]: {
+                ...prevState[property],
+                isFocus: true,
+            },
+        }));
     };
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(enteredValues);
-    }
-
-    function handleChange(event, property) {
-        setEnteredValues((prevValues) => ({
-            ...prevValues,
-            [property]: event.target.value,
-        }));
     }
 
     return (
@@ -46,13 +67,13 @@ export default function Login() {
                         id="email"
                         type="email"
                         name="email"
-                        value={enteredValues.email}
                         onChange={(event) => handleChange(event, "email")}
-                        onBlur={handleOnBlur}
-                        onFocus={handleOnFocus}
+                        onBlur={() => handleOnBlur("email")}
+                        onFocus={() => handleOnFocus("email")}
+                        value={enteredValues.email.content}
                     />
                      
-                    {emailIsIvalid && emailInputLostFocus && (
+                    {emailIsIvalid && !enteredValues.email.isFocus && (
                         <div className="control-error">Email is invalid</div>
                     )}
                 </div>
@@ -64,7 +85,8 @@ export default function Login() {
                         type="password"
                         name="password"
                         onChange={(event) => handleChange(event, "password")}
-                        value={enteredValues.password}
+                        onBlur={() => handleOnBlur("password")}
+                        value={enteredValues.password.content}
                     />
                 </div>
             </div>
