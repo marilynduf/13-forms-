@@ -3,7 +3,9 @@ export default function Input({ label, id, isNotValid, invalidMsg, ...props }) {
         <div className="control no-margin">
             <label htmlFor={id}>{label}</label>
             <input id={id} {...props} />
-            {isNotValid && <div className="control-error">{invalidMsg}</div>}
+            <div className="control-error">
+                {isNotValid && <p>{invalidMsg}</p>}
+            </div>
         </div>
     );
 }

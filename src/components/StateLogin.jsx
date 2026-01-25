@@ -1,62 +1,35 @@
-import { useState } from "react";
 import Input from "./Input";
-
-const initialValues = {
-    email: {
-        content: "",
-        didEdit: false,
-    },
-    password: {
-        content: "",
-        didEdit: false,
-    },
-};
+import useInput from "../hooks/useInput.js";
+import { isEmail, isNotEmpty, hasMinLength } from "../util/validation.js";
 
 export default function Login() {
-    const [enteredValues, setEnteredValues] = useState(initialValues);
+    const {
+        value: emailValue,
+        handleInputChange: handleEmailChange,
+        handleInputBlur: handleEmailBlur,
+        hasError: emailHasError,
+        handleReset: handleResetEmail,
+    } = useInput("", (value) => isEmail(value) && isNotEmpty(value));
 
-    const emailIsInvalid =
-        !enteredValues.email.content.includes("@") &&
-        enteredValues.email.didEdit;
-
-    const passwordIsInvalid =
-        enteredValues.password.content !== "" &&
-        enteredValues.password.didEdit &&
-        enteredValues.password.content.length.trim() < 8;
-
-    const handleReset = function () {
-        setEnteredValues(initialValues);
-    };
-
-    const handleOnBlur = function (identifier) {
-        setEnteredValues((prevState) => ({
-            ...prevState,
-            [identifier]: {
-                ...prevState[identifier],
-                didEdit: true,
-            },
-        }));
-    };
-
-    function handleChange(event, property) {
-        setEnteredValues((prevState) => ({
-            ...prevState,
-            [property]: {
-                didEdit: false,
-                content: event.target.value,
-            },
-        }));
-    }
+    const {
+        value: passwordValue,
+        handleInputChange: handlePasswordChange,
+        handleInputBlur: handlePasswordBlur,
+        hasError: passwordHasError,
+        handleReset: handleResetPassword,
+    } = useInput("", (value) => hasMinLength(value, 6) && isNotEmpty(value));
 
     function handleSubmit(event) {
         event.preventDefault();
-        if (emailIsInvalid || enteredValues.email.content === "") {
-            console.log("email invalid");
-            return;
-        }
-        setEnteredValues(initialValues);
-        console.log("sending HTTP request...");
+        if (emailHasError || passwordHasError) return;
+        handleResetPassword();
+        handleResetEmail();
     }
+
+    const resetAllInput = function () {
+        handleResetPassword();
+        handleResetEmail();
+    };
 
     return (
         <form name="form" onSubmit={handleSubmit}>
@@ -68,27 +41,29 @@ export default function Login() {
                     id="email"
                     type="email"
                     name="email"
-                    isNotValid={emailIsInvalid}
+                    isNotValid={emailHasError}
                     invalidMsg="Email is invalid"
-                    onChange={(event) => handleChange(event, "email")}
-                    onBlur={() => handleOnBlur("email")}
-                    value={enteredValues.email.content}
+                    onChange={handleEmailChange}
+                    onBlur={handleEmailBlur}
+                    value={emailValue}
+                    required
                 />
                 <Input
                     label="PASSWORD"
                     id="password"
                     type="password"
                     name="password"
-                    isNotValid={passwordIsInvalid}
+                    isNotValid={passwordHasError}
                     invalidMsg="Password is invalid"
-                    onChange={(event) => handleChange(event, "password")}
-                    onBlur={() => handleOnBlur("password")}
-                    value={enteredValues.password.content}
+                    onChange={handlePasswordChange}
+                    onBlur={handlePasswordBlur}
+                    value={passwordValue}
+                    required
                 />
             </div>
 
             <p className="form-actions">
-                <button onClick={handleReset} className="button button-flat">
+                <button onClick={resetAllInput} className="button button-flat">
                     Reset
                 </button>
                 <button className="button">Login</button>
