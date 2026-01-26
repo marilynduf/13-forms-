@@ -7,59 +7,59 @@ import {
 } from "../util/validation";
 import { useActionState } from "react";
 
-export default function Signup() {
-    function signupAction(prevFormState, formData) {
-        const email = formData.get("email");
-        const password = formData.get("password");
-        const confirmPassword = formData.get("confirm-password");
-        const firstName = formData.get("first-name");
-        const lastName = formData.get("last-name");
-        const role = formData.get("role");
-        const terms = formData.get("terms");
-        const acquisitionChannel = formData.getAll("acquisition");
+function signupAction(prevFormState, formData) {
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirm-password");
+    const firstName = formData.get("first-name");
+    const lastName = formData.get("last-name");
+    const role = formData.get("role");
+    const terms = formData.get("terms");
+    const acquisitionChannel = formData.getAll("acquisition");
 
-        let errors = [];
+    let errors = [];
 
-        if (!isEmail(email)) {
-            errors.push("Email invalid");
-        }
-        if (!isNotEmpty(password) || !hasMinLength(password, 4)) {
-            errors.push("Password invalid (at leat 4 characters)");
-        }
-        if (!isEqualsToOtherValue(password, confirmPassword)) {
-            errors.push("Passwords do not match");
-        }
-        if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
-            errors.push("Must provide first name and last name");
-        }
-        if (!isNotEmpty(role)) {
-            errors.push("Must select a role");
-        }
-        if (!terms) {
-            errors.push("Must check terms");
-        }
-        if (acquisitionChannel.length === 0) {
-            errors.push("Select at leat one acquisition");
-        }
-
-        if (errors.length > 0) {
-            return {
-                errors,
-                enteredValues: {
-                    email,
-                    password,
-                    confirmPassword,
-                    firstName,
-                    lastName,
-                    role,
-                    acquisitionChannel,
-                    terms,
-                },
-            };
-        }
-        return { errors: null };
+    if (!isEmail(email)) {
+        errors.push("Email invalid");
+    }
+    if (!isNotEmpty(password) || !hasMinLength(password, 4)) {
+        errors.push("Password invalid (at leat 4 characters)");
+    }
+    if (!isEqualsToOtherValue(password, confirmPassword)) {
+        errors.push("Passwords do not match");
+    }
+    if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+        errors.push("Must provide first name and last name");
+    }
+    if (!isNotEmpty(role)) {
+        errors.push("Must select a role");
+    }
+    if (!terms) {
+        errors.push("Must check terms");
+    }
+    if (acquisitionChannel.length === 0) {
+        errors.push("Select at leat one acquisition");
     }
 
+    if (errors.length > 0) {
+        return {
+            errors,
+            enteredValues: {
+                email,
+                password,
+                confirmPassword,
+                firstName,
+                lastName,
+                role,
+                acquisitionChannel,
+                terms,
+            },
+        };
+    }
+    return { errors: null };
+}
+
+export default function Signup() {
     const [formState, formAction] = useActionState(signupAction, {
         errors: null,
     });
